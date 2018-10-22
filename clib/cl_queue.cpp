@@ -1,5 +1,5 @@
-#include "CL_Queue.h"
-#include "CL_Atomic.h"
+#include "cl_queue.h"
+#include "cl_atomic.h"
 
 #define DATA_CPY(DST, SRC, SIZE) memcpy(DST, SRC, SIZE)
 
@@ -15,7 +15,8 @@ int32_t CL_QueueAdd(CL_QueueType_t *q, void *data)
         q->tail = 0;
     }
 
-    atomic_add(&q->length, 1);
+    //atomic_add(&q->length, 1);
+	q->length++;
 
     assert(q->head >= 0 && q->head < q->capacity);
     assert(q->tail >= 0 && q->tail < q->capacity);
@@ -36,7 +37,8 @@ int32_t CL_QueuePoll(CL_QueueType_t *q, void *data)
         q->head = 0;
     }
 
-    atomic_add(&q->length, -1);
+	q->length--;
+    //atomic_add(&q->length, -1);
 
     assert(q->head >= 0 && q->head < q->capacity);
     assert(q->tail >= 0 && q->tail < q->capacity);

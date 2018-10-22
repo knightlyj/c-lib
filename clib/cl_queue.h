@@ -1,11 +1,12 @@
 /*********************************************************************************
 *Description:  这是一个泛型环形队列,队列容量必须为const(编译时确定)
+*Warnings:     add和poll功能可以同时进行,但单独add或poll功能不可重入
 **********************************************************************************/
 
 #pragma once
 
-#include "CL_Common.h"
-
+#include "cl_common.h"
+#include <atomic>
 /**
 * @brief 队列所用数据结构
 */
@@ -13,7 +14,7 @@ typedef struct{
     void *data; 
     int32_t head;
     int32_t tail;
-    int32_t length;
+    std::atomic<int> length;
     int32_t capacity;
     int32_t data_size;
 } CL_QueueType_t;

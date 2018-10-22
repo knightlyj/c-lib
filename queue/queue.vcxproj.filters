@@ -18,7 +18,10 @@
     <ClCompile Include="test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="queue.cpp">
+    <ClCompile Include="..\clib\cl_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\clib\cl_atomic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

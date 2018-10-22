@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "stdio.h"
-#include "queue.h"
+#include "cl_queue.h"
 #include <iostream>
 #include <vector>
 
@@ -14,7 +14,7 @@ template<typename T, unsigned int size>
 bool test_poll_when_full()
 {
     vector<T> vec;
-    QUEUE_DEF_INIT(test_queue, size, T, NOTHING);
+	CL_QUEUE_DEF_INIT(test_queue, size, T, CL_NOTHING);
 
     for (int i = 0; i < 4096; i++) {
         T num = rand();
@@ -25,20 +25,20 @@ bool test_poll_when_full()
 
         //push to queue
         T data;
-        if (queue_is_full(&test_queue))
-            queue_poll(&test_queue, &data);
+        if (CL_QueueFull(&test_queue))
+            CL_QueuePoll(&test_queue, &data);
 
-        queue_add(&test_queue, &num);
+		CL_QueueAdd(&test_queue, &num);
     }
 
-    if (vec.size() != queue_length(&test_queue)) {
+    if (vec.size() != CL_QueueLength(&test_queue)) {
         cout << "length not equal" << endl;
         return false;
     }
 
     T* data;
     int cnt = 0;
-    QUEUE_FOR_EACH(&test_queue, data, T) {
+	CL_QUEUE_FOR_EACH(&test_queue, data, T) {
         if (*data != vec[cnt++])
             return false;
     }
@@ -51,7 +51,7 @@ template<typename T, unsigned int size>
 bool test_discard_when_full()
 {
     vector<T> vec;
-    QUEUE_DEF_INIT(test_queue, size, T, NOTHING);
+	CL_QUEUE_DEF_INIT(test_queue, size, T, CL_NOTHING);
 
     for (int i = 0; i < 4096; i++) {
         T num = rand();
@@ -60,7 +60,7 @@ bool test_discard_when_full()
             T vdata = vec[0];
             vec.erase(vec.begin());
             T data;
-            queue_poll(&test_queue, &data);
+            CL_QueuePoll(&test_queue, &data);
 
             if (vdata != data) {
                 return false;
@@ -72,18 +72,18 @@ bool test_discard_when_full()
             vec.push_back(num);
 
         //push to queue
-        if (!queue_is_full(&test_queue))
-            queue_add(&test_queue, &num);
+        if (!CL_QueueFull(&test_queue))
+			CL_QueueAdd(&test_queue, &num);
     }
 
-    if (vec.size() != queue_length(&test_queue)) {
+    if (vec.size() != CL_QueueLength(&test_queue)) {
         cout << "length not equal" << endl;
         return false;
     }
 
     T* data;
     int cnt = 0;
-    QUEUE_FOR_EACH(&test_queue, data, T) {
+    CL_QUEUE_FOR_EACH(&test_queue, data, T) {
         if (*data != vec[cnt++])
             return false;
     }
@@ -96,7 +96,7 @@ template<typename T, unsigned int size>
 bool test_discard_random()
 {
     vector<T> vec;
-    QUEUE_DEF_INIT(test_queue, size, T, NOTHING);
+	CL_QUEUE_DEF_INIT(test_queue, size, T, CL_NOTHING);
 
     for (int i = 0; i < 4096; i++) {
         T num = rand();
@@ -105,7 +105,7 @@ bool test_discard_random()
             T vdata = vec[0];
             vec.erase(vec.begin());
             T data;
-            queue_poll(&test_queue, &data);
+            CL_QueuePoll(&test_queue, &data);
 
             if (vdata != data) {
                 return false;
@@ -117,18 +117,18 @@ bool test_discard_random()
             vec.push_back(num);
 
         //push to queue
-        if (!queue_is_full(&test_queue))
-            queue_add(&test_queue, &num);
+        if (!CL_QueueFull(&test_queue))
+			CL_QueueAdd(&test_queue, &num);
     }
 
-    if (vec.size() != queue_length(&test_queue)) {
+    if (vec.size() != CL_QueueLength(&test_queue)) {
         cout << "length not equal" << endl;
         return false;
     }
 
     T* data;
     int cnt = 0;
-    QUEUE_FOR_EACH(&test_queue, data, T) {
+	CL_QUEUE_FOR_EACH(&test_queue, data, T) {
         if (*data != vec[cnt++])
             return false;
     }
@@ -176,24 +176,24 @@ int main(int argc, char **argv)
         goto out;
     }
 
-    //if (!test_poll_when_full<uint32_t, 50>())
-    //{
-    //    success = false;
-    //    goto out;
-    //}
+    if (!test_poll_when_full<uint32_t, 50>())
+    {
+        success = false;
+        goto out;
+    }
 
 
-    //if (!test_discard_when_full<testStruct, 256>())
-    //{
-    //    success = false;
-    //    goto out;
-    //}
+    if (!test_discard_when_full<testStruct, 256>())
+    {
+        success = false;
+        goto out;
+    }
 
-    //if (!test_discard_when_full<uint32_t, 50>())
-    //{
-    //    success = false;
-    //    goto out;
-    //}
+    if (!test_discard_when_full<uint32_t, 50>())
+    {
+        success = false;
+        goto out;
+    }
 
    /* if (!test_discard_random<testStruct, 10>())
     {
