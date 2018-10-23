@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="clib">
+      <UniqueIdentifier>{d5070545-97da-426b-b144-3adc1650fc73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test_case">
+      <UniqueIdentifier>{365bc957-753b-42d9-aa2b-cb0ff9535734}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\clib\cl_queue.cpp">
+      <Filter>clib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\clib\cl_atomic.cpp">
+      <Filter>clib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\queue_test.cpp">
+      <Filter>test_case</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
