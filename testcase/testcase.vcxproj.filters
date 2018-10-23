@@ -15,7 +15,10 @@
     <ClCompile Include="..\clib\cl_atomic.cpp">
       <Filter>clib</Filter>
     </ClCompile>
-    <ClCompile Include="src\queue_test.cpp">
+    <ClCompile Include="..\clib\cl_fsm.cpp">
+      <Filter>clib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fsm_test.cpp">
       <Filter>test_case</Filter>
     </ClCompile>
   </ItemGroup>

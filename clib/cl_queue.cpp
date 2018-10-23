@@ -15,7 +15,7 @@ int32_t CL_QueueAdd(CL_QueueType_t *q, void *data)
         q->tail = 0;
     }
 
-	q->length++;
+    q->length++;
 
     assert(q->head >= 0 && q->head < q->capacity);
     assert(q->tail >= 0 && q->tail < q->capacity);
@@ -36,7 +36,7 @@ int32_t CL_QueuePoll(CL_QueueType_t *q, void *data)
         q->head = 0;
     }
 
-	q->length--;
+    q->length--;
 
     assert(q->head >= 0 && q->head < q->capacity);
     assert(q->tail >= 0 && q->tail < q->capacity);

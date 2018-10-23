@@ -148,8 +148,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\clib\cl_atomic.cpp" />
+    <ClCompile Include="..\clib\cl_fsm.cpp" />
     <ClCompile Include="..\clib\cl_queue.cpp" />
-    <ClCompile Include="src\queue_test.cpp" />
+    <ClCompile Include="src\fsm_test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -16,35 +16,37 @@ enum
 {
     CL_CORTEX_M3 = 3,
 
-	CL_X64 = 64,
+    CL_X64 = 64,
 };
 
 #define CL_CPU_TYPE		CL_X64
 
-
-#define CL_NOTHING
-
-
+//--------------BOOL-------------------
 #define CL_BOOL             uint8_t
 #define CL_TRUE             (1)
 #define CL_FALSE            (0)
 
-
+//-----------返回值-------------------
 #define CL_RESULT           int32_t
 #define CL_SUCCESS          (0)
 #define CL_FAILED           (-1)
 #define CL_INVALID_PARAM    (-2)
 
-#define CL_INLINE           __inline
 
+//--------------ASSERT--------------------
 #ifdef _DEBUG
 #include "assert.h"
 #else
 #define assert(expression)      CL_NOTHING
 #endif
 
-#define CL_ARRAY_LENGTH(array)      (sizeof(array) / sizeof(array[0]))
-
+//---------------其他宏定义----------------------
 #define Log     printf
+#define CL_NOTHING
+#define CL_INLINE           __inline
+#define CL_ARRAY_LENGTH(array)      (sizeof(array) / sizeof(array[0]))
+#define CL_NULL     0   
+
+
 
 
