@@ -4,6 +4,8 @@
 #include "cl_queue.h"
 #include <iostream>
 #include <vector>
+#include <Windows.h>
+#include "processthreadsapi.h"
 
 using namespace std;
 
@@ -143,7 +145,7 @@ struct testStruct
     float b;
 
     testStruct() : a(0), b(0) {
-        
+
     }
 
     testStruct(int n) {
@@ -164,49 +166,52 @@ struct testStruct
     }
 };
 
+uint8_t testStr[] = "one line 1234\n";
+
+CL_QUEUE_DEF_INIT(testq, 256, uint8_t, );
+uint32_t poll_counter = 0, add_counter = 0;
+DWORD __stdcall thread_poll(LPVOID lpThreadParameter) {
+    int index = 0;
+    while (1) {
+        
+        uint8_t data;
+        if (CL_QueuePoll(&testq, &data) == CL_SUCCESS) {
+            if (data != testStr[index]) {
+                int i = 0;
+            }
+            printf("%c", data);
+
+            index++;
+            if (index >= 14) {
+                index = 0;
+            }
+
+            poll_counter++;
+        }
+        
+        Sleep(1);
+    }
+}
+
+
+
+
 int main(int argc, char **argv)
 {
     bool success = true;
     srand(time(NULL));
 
+    static HANDLE thread = NULL;
+    thread = CreateThread(NULL, 0, thread_poll, NULL, 0, NULL);
 
-    if (!test_poll_when_full<testStruct, 10>())
-    {
-        success = false;
-        goto out;
+    while (1) {
+        for (int i = 0; i < sizeof(testStr) - 1; i++) {
+            CL_QueueAdd(&testq, &testStr[i]);
+            add_counter++;
+        }
+        Sleep(50);
     }
 
-    if (!test_poll_when_full<uint32_t, 50>())
-    {
-        success = false;
-        goto out;
-    }
-
-
-    if (!test_discard_when_full<testStruct, 256>())
-    {
-        success = false;
-        goto out;
-    }
-
-    if (!test_discard_when_full<uint32_t, 50>())
-    {
-        success = false;
-        goto out;
-    }
-
-   /* if (!test_discard_random<testStruct, 10>())
-    {
-        success = false;
-        goto out;
-    }*/
-/*
-    if (!test_discard_random<uint32_t, 50>())
-    {
-        success = false;
-        goto out;
-    }
-*/
 out:
 
     if (success) {
