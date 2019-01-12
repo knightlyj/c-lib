@@ -87,9 +87,10 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\clib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\clib;$(SolutionDir)\mathlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,7 +150,11 @@
   <ItemGroup>
     <ClCompile Include="..\clib\cl_atomic.cpp" />
     <ClCompile Include="..\clib\cl_queue.cpp" />
-    <ClCompile Include="src\queue_test.cpp" />
+    <ClCompile Include="..\mathlib\matrix.c" />
+    <ClCompile Include="..\mathlib\quaternion.c" />
+    <ClCompile Include="..\mathlib\test\matrix_test.c" />
+    <ClCompile Include="..\mathlib\vector3.c" />
+    <ClCompile Include="src\main.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
