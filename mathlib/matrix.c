@@ -45,9 +45,11 @@ uint8_t Matrix_Copy(Matrix* src, Matrix* dst)
             MAT_IDX((*dst), i, k) = MAT_IDX((*src), i, k);
         }
     }
+
+    return 1;
 }
 
-uint8_t Matrix_Equal(Matrix* m1, Matrix* m2, float tolerance)
+uint8_t Matrix_Equal(Matrix* m1, Matrix* m2, MAT_FLOAT tolerance)
 {
     if (m1->row != m2->row || m1->col != m2->col)
         return 0;
@@ -107,7 +109,7 @@ uint8_t Matrix_Sub(Matrix* m1, Matrix* m2, Matrix* out)
     return 1;
 }
 
-void Matrix_Scale(Matrix* m, float scale, Matrix* out)
+void Matrix_Scale(Matrix* m, MAT_FLOAT scale, Matrix* out)
 {
     uint8_t rowSize, colSize;
     rowSize = m->row;
@@ -135,7 +137,7 @@ uint8_t Matrix_Multiply(Matrix* m1, Matrix* m2, Matrix* out)
     {
         for (int k = 0; k < col; k++)
         {
-            float sum = 0;
+            MAT_FLOAT sum = 0;
             for (int x = 0; x < m1->col; x++)
                 sum += MAT_IDX(*m1, i, x) * MAT_IDX(*m2, x, k);
 
@@ -176,7 +178,7 @@ uint8_t Matrix_SelfTranspose(Matrix* m)
     {
         for (int k = i + 1; k < size; k++)
         {
-            float tmp = MAT_IDX(*m, i, k);
+            MAT_FLOAT tmp = MAT_IDX(*m, i, k);
             MAT_IDX(*m, i, k) = MAT_IDX(*m, k, i);
             MAT_IDX(*m, k, i) = tmp;
         }
@@ -188,30 +190,30 @@ uint8_t Matrix_SelfTranspose(Matrix* m)
 //三种初等行变换
 static void SwapRow(Matrix* m, uint8_t row1, uint8_t row2)
 {
-    float *pRow1, *pRow2;
+    MAT_FLOAT *pRow1, *pRow2;
     pRow1 = m->data + (int)row1 * m->col;
     pRow2 = m->data + (int)row2 * m->col;
     for (int i = 0; i < m->col; i++)
     {
-        float tmp;
+        MAT_FLOAT tmp;
         tmp = pRow1[i];
         pRow1[i] = pRow2[i];
         pRow2[i] = tmp;
     }
 }
 
-static void ScaleRow(Matrix* m, uint8_t row, float scale)
+static void ScaleRow(Matrix* m, uint8_t row, MAT_FLOAT scale)
 {
-    float* pRow = m->data + (int)row * m->col;
+    MAT_FLOAT* pRow = m->data + (int)row * m->col;
     for (int i = 0; i < m->col; i++)
     {
         pRow[i] *= scale;
     }
 }
 
-static void AddScaleRow(Matrix* m, uint8_t srcRow, float scale, uint8_t dstRow)
+static void AddScaleRow(Matrix* m, uint8_t srcRow, MAT_FLOAT scale, uint8_t dstRow)
 {
-    float *pSrcRow, *pDstRow;
+    MAT_FLOAT *pSrcRow, *pDstRow;
     pSrcRow = m->data + (int)srcRow * m->col;
     pDstRow = m->data + (int)dstRow * m->col;
 
@@ -227,8 +229,8 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out)
         return 0;
 
     uint8_t size = m->row;
-    float* pRow;
-    const float tolerance = 0.0003f;
+    MAT_FLOAT* pRow;
+    const MAT_FLOAT tolerance = INFINIT_SMALL;
 
     //out = I
     Matrix_Identity(out);
@@ -242,12 +244,12 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out)
         if (FLOAT_NEAR(pRow[i], 0, tolerance))
         { //阶梯首元素为0,需要交换行
             int maxAbsRow = -1;
-            float maxAbosute = 0;
+            MAT_FLOAT maxAbosute = 0;
 
             //找到当前列绝对值最大的一行, 交换
             for (int k = i + 1; k < size; k++)
             {
-                float absolute = fabsf(m->data[k * m->col + i]);
+                MAT_FLOAT absolute = (MAT_FLOAT)fabs(MAT_IDX(*m, k, i));
                 if (absolute > maxAbosute)
                 {
                     maxAbsRow = k;
@@ -265,7 +267,7 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out)
                 //前面的元素都是0,不用交换
                 for (int x = i; x < size; x++) 
                 {
-                    float tmp = MAT_IDX(*m, i, x);
+                    MAT_FLOAT tmp = MAT_IDX(*m, i, x);
                     MAT_IDX(*m, i, x) = MAT_IDX(*m, maxAbsRow, x);
                     MAT_IDX(*m, maxAbsRow, x) = tmp;
                 }
@@ -275,7 +277,7 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out)
         }
 
         //阶梯首元素归1
-        float scale = 1 / pRow[i];
+        MAT_FLOAT scale = 1 / pRow[i];
         //ScaleRow(m, i, scale); //可优化
         //前面的元素都是0,不用计算
         for (int x = i; x < size; x++)
@@ -283,10 +285,11 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out)
             MAT_IDX(*m, i, x) *= scale;
         }
         ScaleRow(out, i, scale);
-
+        
+		//对下面的行消元
         for (int k = i + 1; k < size; k++)
         {
-            scale = -m->data[k * m->col + i];
+            scale = -MAT_IDX(*m, k, i);
             //AddScaleRow(m, i, scale, k);  //可优化
             //前面的元素都是0,不用计算
             for (int x = i; x < size; x++)
@@ -296,16 +299,15 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out)
             AddScaleRow(out, i, scale, k);
         }
 
-        
     }
-    
+
     //此时对角线全部为1
     //再消掉右上角的部分
     for (int i = size - 1; i >= 0; i--)
     {
         for (int k = i - 1; k >= 0; k--)
         {
-            float scale = -MAT_IDX(*m, k, i);
+            MAT_FLOAT scale = -MAT_IDX(*m, k, i);
             //AddScaleRow(m, i, scale, k); //可优化
             //对于每一行,只要把前面行的此列元素置0即可
             MAT_IDX(*m, k, i) = 0;
