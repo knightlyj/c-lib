@@ -217,7 +217,7 @@ static void AddScaleRow(Matrix* m, uint8_t srcRow, float scale, uint8_t dstRow)
 
     for (int i = 0; i < m->col; i++)
     {
-        pSrcRow[i] += pDstRow[i] * scale;
+        pDstRow[i] += pSrcRow[i] * scale;
     }
 }
 
@@ -233,6 +233,7 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out)
     //out = I
     Matrix_Identity(out);
 
+    
     //先处理成上三角矩阵
     for (int i = 0; i < size; i++)
     {
@@ -276,8 +277,10 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out)
             AddScaleRow(m, i, scale, k);  //可优化
             AddScaleRow(out, i, scale, k);
         }
-    }
 
+        
+    }
+    
     //再消掉右上角的部分
     for (int i = size - 1; i >= 0; i--)
     {
@@ -292,7 +295,7 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out)
     return 1;
 }
 
-char* Matrix_ToString(Matrix* m, char* buff)
+char* Matrix_ToString(Matrix* m, char* buff, char* seperator)
 {
     buff[0] = '\0';
     for (int i = 0; i < m->row; i++) 
@@ -300,7 +303,7 @@ char* Matrix_ToString(Matrix* m, char* buff)
         for (int k = 0; k < m->col; k++)
         {
             int len = strlen(buff);
-            sprintf(buff + len, "%.2f\t", MAT_IDX(*m, i, k));
+            sprintf(buff + len, "%.3f%s", MAT_IDX(*m, i, k), seperator);
         }
         strcat(buff, "\n");
     }
