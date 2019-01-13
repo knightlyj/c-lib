@@ -559,7 +559,7 @@ void InverseTest()
         result.data = invResults[i];
 
         assert(Matrix_Equal(&inv, &result, 0.0001f));
-
+        
         free(inv.data);
     }
 }

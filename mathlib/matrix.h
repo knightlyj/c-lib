@@ -21,7 +21,7 @@ Matrix name = {rowSize, colSize, name##_mat_data};
 
 //indexer; M[r][c]
 #define MAT_IDX(m, r, c) \
-(m).data[r * (m).col + c]
+((m).data[r * (m).col + c])
 
 // matrix = I 
 uint8_t Matrix_Identity(Matrix* m);

@@ -261,33 +261,55 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out)
             }
             else
             {
-                SwapRow(m, i, maxAbsRow); //可优化
+                //SwapRow(m, i, maxAbsRow); //可优化
+                //前面的元素都是0,不用交换
+                for (int x = i; x < size; x++) 
+                {
+                    float tmp = MAT_IDX(*m, i, x);
+                    MAT_IDX(*m, i, x) = MAT_IDX(*m, maxAbsRow, x);
+                    MAT_IDX(*m, maxAbsRow, x) = tmp;
+                }
+
                 SwapRow(out, i, maxAbsRow);
             }
         }
 
         //阶梯首元素归1
         float scale = 1 / pRow[i];
-        ScaleRow(m, i, scale); //可优化
+        //ScaleRow(m, i, scale); //可优化
+        //前面的元素都是0,不用计算
+        for (int x = i; x < size; x++)
+        {
+            MAT_IDX(*m, i, x) *= scale;
+        }
         ScaleRow(out, i, scale);
 
         for (int k = i + 1; k < size; k++)
         {
             scale = -m->data[k * m->col + i];
-            AddScaleRow(m, i, scale, k);  //可优化
+            //AddScaleRow(m, i, scale, k);  //可优化
+            //前面的元素都是0,不用计算
+            for (int x = i; x < size; x++)
+            {
+                MAT_IDX(*m, k, x) += MAT_IDX(*m, i, x) * scale;
+            }
             AddScaleRow(out, i, scale, k);
         }
 
         
     }
     
+    //此时对角线全部为1
     //再消掉右上角的部分
     for (int i = size - 1; i >= 0; i--)
     {
         for (int k = i - 1; k >= 0; k--)
         {
-            float scale = -m->data[k * m->col + i];
-            AddScaleRow(m, i, scale, k); //可优化
+            float scale = -MAT_IDX(*m, k, i);
+            //AddScaleRow(m, i, scale, k); //可优化
+            //对于每一行,只要把前面行的此列元素置0即可
+            MAT_IDX(*m, k, i) = 0;
+            //MAT_IDX(*m, k, i) += MAT_IDX(*m, i, i) * scale;
             AddScaleRow(out, i, scale, k);
         }
     }
