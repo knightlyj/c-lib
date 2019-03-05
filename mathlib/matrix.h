@@ -13,6 +13,7 @@ extern "C" {
 #define MAT_FLOAT double
 #endif // ! MAT_FLOAT
 
+//矩阵行列的索引从0开始,到row-1和col-1
 typedef struct {
     uint8_t row, col;
     MAT_FLOAT* data;
@@ -59,6 +60,9 @@ uint8_t Matrix_Inverse(Matrix* m, Matrix* out);
 
 //tostring
 char* Matrix_ToString(Matrix* m, char* buff, char* seperator);
+
+//行最简
+uint8_t Matrix_RREF(Matrix* m, MAT_FLOAT* solution);
 
 //----------header end--------------
 

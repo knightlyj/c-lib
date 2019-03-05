@@ -327,10 +327,99 @@ char* Matrix_ToString(Matrix* m, char* buff, char* seperator)
         for (int k = 0; k < m->col; k++)
         {
             int len = strlen(buff);
-            sprintf(buff + len, "%.3f%s", MAT_IDX(*m, i, k), seperator);
+            sprintf(buff + len, "%.6f%s", MAT_IDX(*m, i, k), seperator);
         }
         strcat(buff, "\n");
     }
 
     return buff;
+}
+
+//行最简
+uint8_t Matrix_RREF(Matrix* m, MAT_FLOAT* solution)
+{
+    MAT_FLOAT* pRow;
+    const MAT_FLOAT tolerance = INFINIT_SMALL;
+
+    int offset = 0;
+    //先处理成阶梯形
+    for (int i = 0; i < m->row; i++)
+    {
+        pRow = m->data + i * m->col;
+
+        if (FLOAT_NEAR(pRow[i + offset], 0, tolerance))
+        { //阶梯首元素为0,需要交换行
+            int maxAbsRow = -1;
+            MAT_FLOAT maxAbosute = 0;
+
+            //找到当前列绝对值最大的一行, 交换
+            for (int k = i + 1; k < m->row; k++)
+            {
+                MAT_FLOAT absolute = (MAT_FLOAT)fabs(MAT_IDX(*m, k, i));
+                if (absolute > maxAbosute)
+                {
+                    maxAbsRow = k;
+                    maxAbosute = absolute;
+                }
+            }
+
+            if (maxAbsRow < 0)
+            {//singular
+                offset++;
+            }
+            else
+            {
+                //SwapRow(m, i, maxAbsRow); //可优化
+                //前面的元素都是0,不用交换
+                for (int x = i; x < m->col; x++)
+                {
+                    MAT_FLOAT tmp = MAT_IDX(*m, i, x);
+                    MAT_IDX(*m, i, x) = MAT_IDX(*m, maxAbsRow, x);
+                    MAT_IDX(*m, maxAbsRow, x) = tmp;
+                }
+            }
+        }
+
+        //阶梯首元素归1
+        MAT_FLOAT scale = 1 / pRow[i + offset];
+        //ScaleRow(m, i, scale); //可优化
+        //前面的元素都是0,不用计算
+        for (int x = i; x < m->col; x++)
+        {
+            MAT_IDX(*m, i, x) *= scale;
+        }
+
+        //对下面的行消元
+        for (int k = i + 1; k < m->row; k++)
+        {
+            scale = -MAT_IDX(*m, k, i);
+            //AddScaleRow(m, i, scale, k);  //可优化
+            //前面的元素都是0,不用计算
+            for (int x = i; x < m->col; x++)
+            {
+                MAT_IDX(*m, k, x) += MAT_IDX(*m, i, x) * scale;
+            }
+        }
+    }
+
+    //此时对角线全部为1
+    //再消掉右上角的部分
+    for (int i = m->row - 1; i >= 0; i--)
+    {
+        for (int k = i - 1; k >= 0; k--)
+        {
+            MAT_FLOAT scale = -MAT_IDX(*m, k, i);
+            //AddScaleRow(m, i, scale, k); //可优化
+            //对于每一行,只要把前面行的此列元素置0即可
+            MAT_IDX(*m, k, i) = 0;
+            MAT_IDX(*m, k, m->col - 1) += MAT_IDX(*m, i, m->col - 1) * scale;
+        }
+    }
+
+    for(int i = 0; i < m->row; i++)
+    {
+        solution[i] = MAT_IDX(*m, i, m->col - 1);
+    }
+
+    return 1;
 }

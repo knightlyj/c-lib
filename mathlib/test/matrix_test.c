@@ -3,6 +3,7 @@
 #include "stdlib.h"
 #include "assert.h"
 #include "time.h"
+#include "mathex.h"
 
 #define MAX_TEST_SIZE 8
 
@@ -564,7 +565,134 @@ void InverseTest()
     }
 }
 
-char buff[1024];
+//1
+MAT_FLOAT eqs1[2] = { 13.444f,	184.737f };
+MAT_FLOAT sol1[1] = { 13.7412f };
+
+//2
+MAT_FLOAT eqs2[6] = { 14.000f, 0.222f, 140.412f,
+                    17.222f, 17.407f, 484.314f,};
+MAT_FLOAT sol2[2] = { 9.7411f,
+                    18.1854f };
+
+//3
+MAT_FLOAT eqs3[12] = { 11.296f, 6.519f, 0.407f, 156.789f,
+                    16.778f, 4.889f, 9.630f, 299.680f,
+                    16.926f, 8.963f, 0.407f, 231.126f,};
+MAT_FLOAT sol3[3] = { 12.1070f,
+                    2.5265f,
+                    8.7432f};
+
+//4
+MAT_FLOAT eqs4[20] = { 13.593f, 3.630f, 6.889f, 17.667f, 541.641f,
+                    14.074f, 16.667f, 0.037f, 16.185f, 527.753f,
+                    11.074f, 11.444f, 2.741f, 15.481f, 485.641f,
+                    14.593f, 6.259f, 12.444f, 2.000f, 405.879f,};
+MAT_FLOAT sol4[4] = { 9.4024f,
+                    8.2259f,
+                    14.8932f,
+                    15.9266f};
+
+//5
+MAT_FLOAT eqs5[30] = { 7.963f, 9.000f, 5.963f, 8.222f, 0.778f, 318.567f,
+                    1.259f, 6.519f, 4.778f, 9.889f, 8.444f, 314.573f,
+                    17.926f, 7.926f, 13.444f, 2.481f, 17.111f, 550.966f,
+                    9.000f, 5.667f, 8.074f, 4.222f, 11.889f, 370.261f,
+                    13.519f, 10.519f, 15.630f, 1.519f, 18.444f, 610.846f,};
+MAT_FLOAT sol5[5] = { 3.3989f,
+                    12.9699f,
+                    17.5959f,
+                    7.7686f,
+                    7.6795f};
+
+//6
+MAT_FLOAT eqs6[42] = { 13.963f, 5.556f, 12.000f, 16.667f, 16.815f, 12.741f, 733.941f,
+                    15.222f, 16.000f, 9.593f, 9.259f, 17.778f, 10.333f, 722.871f,
+                    16.481f, 0.296f, 9.407f, 18.222f, 12.444f, 0.519f, 650.874f,
+                    13.074f, 5.630f, 15.481f, 13.296f, 4.741f, 0.222f, 559.119f,
+                    15.963f, 18.148f, 14.037f, 9.481f, 0.037f, 15.704f, 659.263f,
+                    7.444f, 8.741f, 8.185f, 8.667f, 15.296f, 12.704f, 516.724f,};
+MAT_FLOAT sol6[6] = { 17.5778f,
+                    5.6443f,
+                    8.4716f,
+                    9.3917f,
+                    8.5527f,
+                    4.3276f};
+
+//7
+MAT_FLOAT eqs7[56] = { 1.444f, 4.222f, 1.481f, 0.333f, 11.963f, 12.000f, 1.815f, 172.948f,
+                    18.259f, 12.148f, 4.963f, 6.000f, 7.222f, 10.185f, 11.148f, 336.621f,
+                    16.444f, 11.778f, 11.296f, 10.407f, 4.296f, 2.444f, 11.852f, 363.539f,
+                    8.667f, 15.444f, 8.815f, 14.667f, 6.333f, 5.037f, 5.074f, 405.055f,
+                    7.037f, 5.593f, 12.111f, 11.963f, 4.667f, 11.185f, 15.444f, 306.609f,
+                    1.407f, 8.519f, 16.074f, 9.222f, 15.889f, 9.556f, 11.630f, 421.693f,
+                    14.259f, 7.519f, 17.667f, 5.444f, 0.630f, 4.407f, 13.926f, 294.728f,};
+MAT_FLOAT sol7[7] = { 0.8171f,
+                    13.2197f,
+                    5.4446f,
+                    5.0760f,
+                    7.8901f,
+                    0.4077f,
+                    3.8121f};
+
+//8
+MAT_FLOAT eqs8[72] = { 18.037f, 6.889f, 13.778f, 9.444f, 5.778f, 16.000f, 4.444f, 8.704f, 980.376f,
+                    9.593f, 8.074f, 7.815f, 5.407f, 14.333f, 0.333f, 16.852f, 4.185f, 750.040f,
+                    15.667f, 3.037f, 4.296f, 5.667f, 11.852f, 13.963f, 11.519f, 12.556f, 993.798f,
+                    2.222f, 1.333f, 13.741f, 6.778f, 5.037f, 2.778f, 1.148f, 10.222f, 453.697f,
+                    18.407f, 15.222f, 12.556f, 3.222f, 8.815f, 16.778f, 14.556f, 11.148f, 1197.698f,
+                    11.852f, 7.704f, 11.667f, 17.519f, 7.037f, 6.037f, 14.815f, 15.444f, 1036.104f,
+                    14.778f, 0.889f, 7.815f, 17.481f, 15.074f, 7.815f, 6.000f, 6.000f, 851.490f,
+                    4.481f, 16.852f, 12.222f, 1.741f, 11.926f, 2.593f, 4.074f, 0.630f, 476.219f,};
+MAT_FLOAT sol8[8] = { 12.4851f,
+                    2.6659f,
+                    10.7794f,
+                    7.8138f,
+                    8.4432f,
+                    18.2929f,
+                    18.4809f,
+                    10.4439f};
+
+MAT_FLOAT* eqsInputs[8] = { eqs1, eqs2, eqs3, eqs4, eqs5, eqs6, eqs7, eqs8, };
+MAT_FLOAT* solInputs[8] = { sol1, sol2, sol3, sol4, sol5, sol6, sol7, sol8, };
+void EquationsTest()
+{
+    for (int i = 1; i <= MAX_TEST_SIZE; i++)
+    {
+        Matrix M;
+        M.row = i;
+        M.col = i + 1;
+        M.data = eqsInputs[i - 1];
+
+
+        MAT_FLOAT* sol = malloc(sizeof(MAT_FLOAT) * i);
+
+        Matrix_RREF(&M, sol);
+
+        Matrix x;
+        x.row = i;
+        x.col = 1;
+        x.data = sol;
+        //PrintMatrix(&x);
+
+        for (int k = 0; k < i; k++)
+        {
+            assert(FLOAT_NEAR(sol[k], *(solInputs[i - 1] + k), 0.0001f));
+        }
+
+        free(sol);
+    }
+}
+
+static char printBuff[1024];
+void PrintMatrix(Matrix* m)
+{
+    printf("---------\n");
+    Matrix_ToString(m, printBuff, " ");
+    printf(printBuff);
+    printf("---------\n");
+}
+
 void RandMatrix()
 {
     for (int size = 1; size <= MAX_TEST_SIZE; size++)
@@ -585,13 +713,66 @@ void RandMatrix()
         }
 
         
-        printf("-------------\n");
-        Matrix_ToString(&m, buff, " ");
-        printf(buff);
-        printf("\n");
-        printf("\n");
-        Matrix_ToString(&m, buff, ", ");
-        printf(buff);
+        PrintMatrix(&m);
+    }
+}
+
+void RandEquations()
+{
+    srand((uint32_t)time(NULL));
+    for (int size = 1; size <= MAX_TEST_SIZE; size++)
+    {
+        Matrix m;
+        m.row = size;
+        m.col = size + 1;
+        m.data = malloc(sizeof(MAT_FLOAT) * m.row * m.col);
+
+        Matrix A;
+        A.row = size;
+        A.col = size;
+        A.data = malloc(sizeof(MAT_FLOAT) * A.row * A.col);
+
+        Matrix x;
+        x.row = size;
+        x.col = 1;
+        x.data = malloc(sizeof(MAT_FLOAT) * x.row * x.col);
+
+        Matrix b;
+        b.row = size;
+        b.col = 1;
+        b.data = malloc(sizeof(MAT_FLOAT) * b.row * b.col);
+
+        for (int i = 0; i < m.row; i++)
+        {
+            for (int k = 0; k < m.col - 1; k++)
+            {
+                MAT_FLOAT r = (MAT_FLOAT)(rand() % 500) / 27.0f;
+                MAT_IDX(m, i, k) = r;
+                MAT_IDX(A, i, k) = r;
+            }
+        }
+
+
+        for (int i = 0; i < x.row; i++)
+        {
+            MAT_FLOAT r = (MAT_FLOAT)(rand() % 500) / 27.0f;
+            MAT_IDX(x, i, 0) = r;
+        }
+
+        Matrix_Multiply(&A, &x, &b);
+
+        for (int i = 0; i < m.row; i++)
+            MAT_IDX(m, i, m.col - 1) = MAT_IDX(b, i, 0);
+
+
+        PrintMatrix(&m);
+        PrintMatrix(&x);
+        printf("*******************\n");
+
+        free(m.data);
+        free(A.data);
+        free(x.data);
+        free(b.data);
     }
 }
 
@@ -605,4 +786,5 @@ ScaleTest();
 TransposeTest();
 SelfTransposeTest();
 MultiplyTest();
-InverseTest();*/
+InverseTest();
+EquationsTest();*/
