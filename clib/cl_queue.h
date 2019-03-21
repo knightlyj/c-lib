@@ -6,18 +6,29 @@
 #pragma once
 
 #include "cl_common.h"
-#include <atomic>
+#if CL_CPU_TYPE == CL_X64
+#include <atomic>   //原子操作库
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+   
 /**
 * @brief 队列所用数据结构
 */
 typedef struct{ 
-    void *data; 
-    int32_t head;
-    int32_t tail;
+    volatile void *data;
+    volatile int32_t head;
+    volatile int32_t tail;
+#if CL_CPU_TYPE == CL_CORTEX_M3 || CL_CPU_TYPE == CL_CORTEX_M4
+    volatile int32_t length;
+#elif   CL_CPU_TYPE == CL_X64
     std::atomic<int> length;
-    int32_t capacity;
-    int32_t data_size;
-} CL_QueueType_t;
+#endif
+    volatile int32_t capacity;
+    volatile int32_t data_size;
+} CL_QueueInfo_t;
 
 /** 
  * @brief 定义并初始化队列
@@ -32,13 +43,13 @@ typedef struct{
  */
 #define CL_QUEUE_DEF_INIT(q_name, capacity, data_type, modifier) \
 modifier data_type q_name##_buf[capacity]; \
-modifier CL_QueueType_t q_name = {q_name##_buf, 0, 0, 0, capacity, sizeof(data_type)};
+modifier CL_QueueInfo_t q_name = {q_name##_buf, 0, 0, 0, capacity, sizeof(data_type)};
 
 /** 
  * @brief 同上,但是用来声明
  */
 #define CL_QUEUE_DECL(q_name) \
-extern CL_QueueType_t q_name;
+extern CL_QueueInfo_t q_name;
 
 /** 
  * @brief 向队列增加一个数据
@@ -49,7 +60,7 @@ extern CL_QueueType_t q_name;
  *     FAILED 操作失败,一般是队列满了
  *     SUCCESS 操作成功
  */
-int32_t CL_QueueAdd(CL_QueueType_t *q, void *data);
+CL_RESULT CL_QueueAdd(CL_QueueInfo_t *q, void *data);
 
 /** 
  * @brief 从队列头部获取一个数据,并将这个数据从队列移除
@@ -60,7 +71,7 @@ int32_t CL_QueueAdd(CL_QueueType_t *q, void *data);
  *     FAILED 操作失败,一般是队列为空
  *     SUCCESS 操作成功
  */
-int32_t CL_QueuePoll(CL_QueueType_t *q, void *data);
+CL_RESULT CL_QueuePoll(CL_QueueInfo_t *q, void *data);
 
 /** 
  * @brief 获取队列头部数据,但不从队列移除此数据
@@ -71,7 +82,7 @@ int32_t CL_QueuePoll(CL_QueueType_t *q, void *data);
  *     FAILED 操作失败,一般是队列为空
  *     SUCCESS 操作成功
  */
-int32_t CL_QueuePeek(CL_QueueType_t *q, void *data);
+CL_RESULT CL_QueuePeek(CL_QueueInfo_t *q, void *data);
 
 /** 
  * @brief 获取队列当前长度
@@ -80,7 +91,7 @@ int32_t CL_QueuePeek(CL_QueueType_t *q, void *data);
  * @return 
  *    返回队列当前长度
  */
-CL_INLINE static int32_t CL_QueueLength(CL_QueueType_t *q){
+CL_STATIC_INLINE int32_t CL_QueueLength(CL_QueueInfo_t *q){
     return q->length;
 }
 
@@ -89,7 +100,7 @@ CL_INLINE static int32_t CL_QueueLength(CL_QueueType_t *q){
  * @param q 队列指针
  *
  */
-CL_INLINE static void CL_QueueClear(CL_QueueType_t *q){
+CL_STATIC_INLINE void CL_QueueClear(CL_QueueInfo_t *q){
     q->head = q->tail = 0;
     q->length = 0;
 }
@@ -101,7 +112,7 @@ CL_INLINE static void CL_QueueClear(CL_QueueType_t *q){
  * @return 
  *    返回队列队列容量
  */
-CL_INLINE static int32_t CL_QueueCapacity(CL_QueueType_t *q){
+CL_STATIC_INLINE int32_t CL_QueueCapacity(CL_QueueInfo_t *q){
     return q->capacity;
 }
 
@@ -113,8 +124,8 @@ CL_INLINE static int32_t CL_QueueCapacity(CL_QueueType_t *q){
  *    TRUE 队列为空
  *    FALSE 队列非空
  */
-CL_INLINE static int32_t CL_QueueEmpty(CL_QueueType_t *q){
-    return q->length == 0;
+CL_STATIC_INLINE CL_BOOL CL_QueueEmpty(CL_QueueInfo_t *q){
+    return (q->length <= 0) ? CL_TRUE : CL_FALSE;
 }
 
 /** 
@@ -125,8 +136,8 @@ CL_INLINE static int32_t CL_QueueEmpty(CL_QueueType_t *q){
  *    TRUE 队列满
  *    FALSE 队列没满
  */
-CL_INLINE static int32_t CL_QueueFull(CL_QueueType_t *q){
-    return q->length >= q->capacity;
+CL_STATIC_INLINE CL_BOOL CL_QueueFull(CL_QueueInfo_t *q){
+    return (q->length >= q->capacity) ? CL_TRUE : CL_FALSE;
 }
 
 /** 
@@ -141,11 +152,18 @@ CL_INLINE static int32_t CL_QueueFull(CL_QueueType_t *q){
  *      char* data;
  *      CL_QUEUE_FOR_EACH(my_queue, data, char)    //迭代访问队列中每个数据
  *      {
- *          printf("%c", *data);    //把这个数据打印出来
+ *          printf("%c", *data);    //把这个数据打印出来               
  *      }
  */
 #define CL_QUEUE_FOR_EACH(q_ptr, data_ptr, data_type) \
-	for(data_ptr = ((data_type *)((q_ptr)->data)) + (q_ptr)->head; \
-		data_ptr != ((data_type *)((q_ptr)->data)) + (q_ptr)->tail; \
-		(++data_ptr) >= ((data_type *)((q_ptr)->data) + (q_ptr)->capacity) ? data_ptr = (data_type *)((q_ptr)->data) : data_ptr)
+    data_ptr = ((data_type *)((q_ptr)->data)) + (q_ptr)->head; \
+	for(int ___q_itrcnt___ = (q_ptr)->length; \
+		___q_itrcnt___ != 0; \
+		___q_itrcnt___--, (++data_ptr) >= ((data_type *)((q_ptr)->data) + (q_ptr)->capacity) ? data_ptr = (data_type *)((q_ptr)->data) : data_ptr)
+
+
+#ifdef __cplusplus
+}
+#endif
+
 

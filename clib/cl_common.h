@@ -11,40 +11,50 @@
 
 #include "stdint.h"
 #include "string.h"
+#include "stdio.h"
 
-enum
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define CL_CORTEX_M3    (3)
+#define CL_CORTEX_M4    (4)
+#define CL_X64          (64)
+
+#define CL_CPU_TYPE     CL_X64
+
+typedef enum
 {
-    CL_CORTEX_M3 = 3,
+    CL_FALSE = 0,
+    CL_TRUE = 1,
+} CL_BOOL;
 
-	CL_X64 = 64,
-};
+typedef enum
+{
+    CL_SUCCESS = 0,
 
-#define CL_CPU_TYPE		CL_X64
+    CL_FAILED = -1,
+    CL_INVALID_PARAM = -2,
 
+} CL_RESULT;
 
-#define CL_NOTHING
-
-
-#define CL_BOOL             uint8_t
-#define CL_TRUE             (1)
-#define CL_FALSE            (0)
-
-
-#define CL_RESULT           int32_t
-#define CL_SUCCESS          (0)
-#define CL_FAILED           (-1)
-#define CL_INVALID_PARAM    (-2)
 
 #define CL_INLINE           __inline
+#define CL_STATIC_INLINE    static CL_INLINE
+#define CL_NULL             (0)
 
 #ifdef _DEBUG
 #include "assert.h"
 #else
-#define assert(expression)      CL_NOTHING
+#define assert(expression)
 #endif
 
 #define CL_ARRAY_LENGTH(array)      (sizeof(array) / sizeof(array[0]))
 
 #define Log     printf
+
+#ifdef __cplusplus
+}
+#endif
 
 

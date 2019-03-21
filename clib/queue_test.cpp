@@ -16,7 +16,7 @@ template<typename T, unsigned int size>
 bool test_poll_when_full()
 {
     vector<T> vec;
-	CL_QUEUE_DEF_INIT(test_queue, size, T, CL_NOTHING);
+	CL_QUEUE_DEF_INIT(test_queue, size, T, );
 
     for (int i = 0; i < 4096; i++) {
         T num = rand();
@@ -53,7 +53,7 @@ template<typename T, unsigned int size>
 bool test_discard_when_full()
 {
     vector<T> vec;
-	CL_QUEUE_DEF_INIT(test_queue, size, T, CL_NOTHING);
+	CL_QUEUE_DEF_INIT(test_queue, size, T, );
 
     for (int i = 0; i < 4096; i++) {
         T num = rand();
@@ -98,7 +98,7 @@ template<typename T, unsigned int size>
 bool test_discard_random()
 {
     vector<T> vec;
-	CL_QUEUE_DEF_INIT(test_queue, size, T, CL_NOTHING);
+	CL_QUEUE_DEF_INIT(test_queue, size, T, );
 
     for (int i = 0; i < 4096; i++) {
         T num = rand();
@@ -172,6 +172,7 @@ CL_QUEUE_DEF_INIT(testq, 256, uint8_t, );
 uint32_t poll_counter = 0, add_counter = 0;
 DWORD __stdcall thread_poll(LPVOID lpThreadParameter) {
     int index = 0;
+    int len = strlen((const char*)testStr);
     while (1) {
         
         uint8_t data;
@@ -182,7 +183,7 @@ DWORD __stdcall thread_poll(LPVOID lpThreadParameter) {
             printf("%c", data);
 
             index++;
-            if (index >= 14) {
+            if (index >= len) {
                 index = 0;
             }
 
@@ -204,15 +205,21 @@ int main(int argc, char **argv)
     static HANDLE thread = NULL;
     thread = CreateThread(NULL, 0, thread_poll, NULL, 0, NULL);
 
+    int len = strlen((const char*)testStr);
     while (1) {
-        for (int i = 0; i < sizeof(testStr) - 1; i++) {
-            CL_QueueAdd(&testq, &testStr[i]);
+        for (int i = 0; i < len; i++) {
+            while (CL_QueueAdd(&testq, &testStr[i]) != CL_SUCCESS)
+                Sleep(1);
             add_counter++;
         }
-        Sleep(50);
+        //Sleep(50);
     }
 
 out:
+
+    /*success = test_poll_when_full<testStruct, 1024>();
+    success = test_discard_when_full<int, 256>();
+    success = test_discard_random<char, 544>();*/
 
     if (success) {
         cout << "all test ok" << endl;
