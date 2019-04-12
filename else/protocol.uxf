@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <help_text/>
+  <zoom_level>9</zoom_level>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>270</x>
+      <y>234</y>
+      <w>126</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>1:可靠协议,需要应答</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>108</x>
+      <y>0</y>
+      <w>162</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>bg=blue
+可靠消息
+默认500ms超时重发
+最多发3次
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>162</x>
+      <y>135</y>
+      <w>108</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>帧头 -- 2 Bytes
+0xab+0xba</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>279</x>
+      <y>135</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>消息类型 -- 1 Byte
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>549</x>
+      <y>135</y>
+      <w>135</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>数据段长度 -- 1 Byte
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>693</x>
+      <y>135</y>
+      <w>117</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>数据段 -- n Bytes
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>819</x>
+      <y>135</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>校验区 -- 2 Bytes
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>315</x>
+      <y>171</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>162</x>
+      <y>414</y>
+      <w>108</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>帧头 -- 2 Bytes
+0xab+0xba</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>414</x>
+      <y>135</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>消息计数 -- 2 Bytes
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>414</x>
+      <y>414</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>消息计数 -- 2 Bytes
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>414</x>
+      <y>234</y>
+      <w>117</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>所有消息一起计数</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>459</x>
+      <y>171</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>108</x>
+      <y>324</y>
+      <w>117</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>bg=blue
+可靠应答</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>549</x>
+      <y>414</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>校验区 -- 2 Bytes
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>819</x>
+      <y>234</y>
+      <w>126</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>从消息类型到数据段</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>873</x>
+      <y>171</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>549</x>
+      <y>513</y>
+      <w>135</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>从消息类型到消息计数</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>603</x>
+      <y>450</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>279</x>
+      <y>414</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>消息类型 -- 1 Byte
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>270</x>
+      <y>513</y>
+      <w>126</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>2:应答可靠协议</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>324</x>
+      <y>450</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>99</x>
+      <y>621</y>
+      <w>117</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>bg=blue
+普通消息</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>144</x>
+      <y>711</y>
+      <w>108</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>帧头 -- 2 Bytes
+0xab+0xba</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>270</x>
+      <y>711</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>消息类型 -- 1 Byte
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>315</x>
+      <y>747</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>261</x>
+      <y>810</y>
+      <w>126</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>0:普通消息</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>414</x>
+      <y>711</y>
+      <w>135</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>数据段长度 -- 1 Byte
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>558</x>
+      <y>711</y>
+      <w>117</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>数据段 -- n Bytes
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>684</x>
+      <y>711</y>
+      <w>126</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>校验区 -- 2 Bytes
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>738</x>
+      <y>747</y>
+      <w>27</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>684</x>
+      <y>810</y>
+      <w>126</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>从消息类型到数据段</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
