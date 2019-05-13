@@ -42,7 +42,7 @@ typedef struct{
  *      以上定义了一个static的队列，队列名为my_queue, 容量为10，队列中的数据类型为char
  */
 #define CL_QUEUE_DEF_INIT(q_name, capacity, data_type, modifier) \
-modifier data_type q_name##_buf[capacity]; \
+static data_type q_name##_buf[capacity]; \
 modifier CL_QueueInfo_t q_name = {q_name##_buf, 0, 0, 0, capacity, sizeof(data_type)};
 
 /** 
